@@ -1,0 +1,58 @@
+yaml
+name: Vigilar chollos
+
+on:
+  # Ejecución automática cada 10 minutos (GitHub puede retrasarla unos minutos)
+  schedule:
+    - cron: "*/10 * * * *"
+  # Botón "Run workflow" para lanzarla a mano desde la pestaña Actions
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "run = normal, diagnose = ver qué datos trae el feed, test = aviso de prueba"
+        type: choice
+        default: run
+        options:
+          - run
+          - diagnose
+          - test
+
+# Permiso para guardar la memoria (state.json) en el propio repositorio
+permissions:
+  contents: write
+
+# Evita que dos ejecuciones se pisen entre sí
+concurrency:
+  group: vigilar-chollos
+  cancel-in-progress: false
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Ejecutar el vigilante
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          MODO: ${{ github.event.inputs.modo || 'run' }}
+        run: python monitor.py --mode "$MODO"
+
+      - name: Guardar la memoria (solo si ha cambiado)
+        if: ${{ always() && (github.event.inputs.modo == '' || github.event.inputs.modo == 'run') }}
+        run: |
+          git config user.name "vigilante-chollos"
+          git config user.email "vigilante-chollos@users.noreply.github.com"
+          git add state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualizar memoria del vigilante"
+            git pull --rebase --autostash
+            git push
+          fi
