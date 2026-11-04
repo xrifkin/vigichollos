@@ -1,0 +1,48 @@
+{
+  "feeds": [
+    "https://www.chollometro.com/rss/nuevos",
+    "https://www.chollometro.com/rss"
+  ],
+
+  "palabras_error": [
+    "error de precio",
+    "error precio",
+    "error en el precio",
+    "errorazo",
+    "error de catalogo",
+    "error de catálogo",
+    "precio erroneo",
+    "precio erróneo",
+    "fallo de precio",
+    "fallo precio",
+    "gazapo",
+    "bug de precio",
+    "precio bug",
+    "precio roto"
+  ],
+
+  "descuento_minimo_porcentaje": 70,
+
+  "avisar_precio_casi_cero": true,
+  "precio_casi_cero_max_eur": 1.0,
+  "palabras_que_anulan_precio_cero": [
+    "gratis",
+    "muestra",
+    "muestras",
+    "cupon",
+    "cupón",
+    "suscripcion",
+    "suscripción",
+    "prueba",
+    "sorteo",
+    "regalo"
+  ],
+
+  "palabras_ignorar": [
+    "resumen semanal",
+    "sorteo"
+  ],
+
+  "max_ofertas_recordadas": 3000,
+  "fallos_seguidos_antes_de_avisar": 6
+}
